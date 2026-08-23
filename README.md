@@ -14,7 +14,7 @@ This project provides scripts that extract resources from Call of Duty Mobile An
 
 - [bnkextr](https://github.com/Willie169/bnkextr) unless you only want original files. Download binary in its release to get it.
 - [vgmstream](https://github.com/vgmstream/vgmstream) unless you only want original files or `.wem` format. On Termux, you can get it by running `pkg install vgmstream -y`. On Linux, if it is not available from your package manager, you may use [Homebrew](https://brew.sh) to install it by running `brew install vgmstream`.
-- [FFmpeg](https://ffmpeg.org) if you want `.flac` format. You can typically get it from your package manager.
+- [FFmpeg](https://ffmpeg.org) if you want `.flac` format, which is lossless and smaller than `.wav` format in size. You can typically get it from your package manager.
 
 ### Usage
 
