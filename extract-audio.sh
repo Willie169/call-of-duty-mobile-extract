@@ -117,7 +117,7 @@ shopt -s globstar
 for f in **/*.bnk; do
   test -f "$f" || continue
   if ! command -v bnkextr >/dev/null 2>&1; then
-    echo 'Error: bnkextr not available' >-2
+    echo 'Error: bnkextr not available' >&2
     exit 1
   fi
   bnkextr "$f"
@@ -127,9 +127,10 @@ done
 for f in **/*.wem; do
   test -f "$f" || continue
   if ! command -v vgmstream-cli >/dev/null 2>&1; then
-    echo 'Error: vgmstream-cli not available' >-2
+    echo 'Error: vgmstream-cli not available' >&2
     exit 1
   fi
+  rm -f "$(echo "$f" | sed 's/\.wem$/.wav/')"
   vgmstream-cli -o "$(echo "$f" | sed 's/\.wem$/.wav/')" "$f"
   [ "$wem" -eq 1 ] && rm "$f"
 done
@@ -137,9 +138,10 @@ done
 for f in **/*.wav; do
   test -f "$f" || continue
   if ! command -v ffmpeg >/dev/null 2>&1; then
-    echo 'Error: ffmpeg not available' >-2
+    echo 'Error: ffmpeg not available' >&2
     exit 1
   fi
+  rm -f "$(echo "$f" | sed 's/\.wav$/.flac/')"
   ffmpeg -i "$f" -c:a flac "$(echo "$f" | sed 's/\.wav$/.flac/')"
   [ "$wav" -eq 1 ] && rm "$f"
 done
