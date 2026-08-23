@@ -27,6 +27,7 @@ while [ $# -gt 0 ]; do
     -h | --help)
       echo "$msg"
       shift
+      exit 0
       ;;
     -r | --rish)
       rish=1
@@ -59,6 +60,10 @@ while [ $# -gt 0 ]; do
       shift
       ;;
     -d | --dir)
+      if [ -z "$2" ]; then
+        echo "Error: -d|--dir requires an argument" >&2
+        exit 1
+      fi
       dir="$2"
       shift 2
       ;;
@@ -77,6 +82,7 @@ done
 mkdir -p "$dir"
 if ! cd "$dir"; then
   echo "Error: can't enter working directory" >&2
+  exit 1
 fi
 if [ "$original" -eq 0 ]; then
   echo 'Error: no format wanted' >&2
@@ -84,37 +90,42 @@ if [ "$original" -eq 0 ]; then
   exit 1
 fi
 if [ "$rish" -eq 0 ]; then
-  adb "${args[@]}" pull "$path"
-  if ! cd GeneratedSoundBanks; then
-    echo 'Error: adb pull failed.' >&2
+  if ! { adb "${args[@]}" pull "$path" && cd GeneratedSoundBanks; }; then
+    echo 'Error: adb pull failed' >&2
     exit 1
   fi
 else
-  command -v uuidgen >/dev/null 2>&1 || pkg install uuid-utils -y
+  if ! { command -v uuidgen >/dev/null 2>&1 || pkg install uuid-utils -y; }; then
+    echo "Error: uuidgen not available and can't be installed" >&2
+    exit 1
+  fi
   uuid=$(uuidgen)
-  mkdir "/storage/emulated/0/$uuid"
-  echo "cp -r /storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Audio/GeneratedSoundBanks /storage/emulated/0/$uuid/; exit" | rish
+  if ! mkdir "/storage/emulated/0/$uuid"; then
+    echo "Error: can't create /storage/emulated/0/$uuid" >&2
+    exit 1
+  fi
+  echo "cp -r /storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Audio/GeneratedSoundBanks /storage/emulated/0/$uuid/; exit" | rish "${args[@]}"
   cp -r "/storage/emulated/0/$uuid/GeneratedSoundBanks" .
   rm -r "/storage/emulated/0/$uuid"
   if ! cd GeneratedSoundBanks; then
-    echo 'Error: Either rish copy or Termux copy failed.'
+    echo 'Error: Either rish copy or Termux copy failed'
     exit 1
   fi
 fi
 shopt -s globstar
-[ "$wem" -eq 0 ] && exit
+[ "$wem" -eq 0 ] && exit 0
 for f in **/*.bnk; do
   test -f "$f" || continue
   bnkextr "$f"
   [ "$original" -eq 1 ] && rm "$f"
 done
-[ "$wav" -eq 0 ] && exit
+[ "$wav" -eq 0 ] && exit 0
 for f in **/*.wem; do
   test -f "$f" || continue
   vgmstream -o "$(echo "$f" | sed 's/\.wem$/.wav/')" "$f"
   [ "$wem" -eq 1 ] && rm "$f"
 done
-[ "$flac" -eq 0 ] && exit
+[ "$flac" -eq 0 ] && exit 0
 for f in **/*.wav; do
   test -f "$f" || continue
   ffmpeg -i "$f" -c:a flac "$(echo "$f" | sed 's/\.wav$/.flac/')"
