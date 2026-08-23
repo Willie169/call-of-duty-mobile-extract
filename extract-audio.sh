@@ -2,7 +2,7 @@
 
 # shellcheck disable=2001
 
-msg="$0 [-h|--help] [-r|--rish] [-a|--adb] [-o|--original] [-m|--wem] [-w|--wav] [-f|--flac] [-d|--dir working_dir] [-- adb_args]
+msg="$0 [-h|--help] [-r|--rish] [-a|--adb] [-o|--original] [-m|--wem] [-w|--wav] [-f|--flac] [-d|--dir working_dir] [-c|--clean] [-- adb_args]
 -h|--help: Print this help message.
 -r|--rish: Assume interactive ADB shell is available with rish.
 -a|--adb (default): Assume ADB is connected.
@@ -13,6 +13,7 @@ adb_args: arguments that will be passed to rish or adb.
 -w|--wav: vgmstream is also needed.
 -f|--flac: ffmpeg is also needed.
 working_dir: working directory, current directory used if not provided
+-c|--clean: Delete all files except audio files. 
 More information: https://github.com/Willie169/call-of-duty-mobile-extract"
 path='/storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Audio/GeneratedSoundBanks'
 dir="$PWD"
@@ -22,6 +23,7 @@ original=0
 wem=0
 wav=0
 flac=0
+clean=0
 while [ $# -gt 0 ]; do
   case "$1" in
     -h | --help)
@@ -66,6 +68,10 @@ while [ $# -gt 0 ]; do
       fi
       dir="$2"
       shift 2
+      ;;
+    -c | --clean)
+      clean=1
+      shift
       ;;
     --)
       shift
@@ -144,4 +150,13 @@ for f in **/*.wav; do
   rm -f "$(echo "$f" | sed 's/\.wav$/.flac/')"
   ffmpeg -i "$f" -c:a flac "$(echo "$f" | sed 's/\.wav$/.flac/')"
   [ "$wav" -eq 1 ] && rm "$f"
+done
+[ "$clean" -eq 0 ] && exit 0
+mapfile -d '' files < <(find . -type f -print0)
+for f in "${files[@]}"; do
+  [[ "$f" == *.bnk ]] && continue
+  [[ "$f" == *.wem ]] && continue
+  [[ "$f" == *.wav ]] && continue
+  [[ "$f" == *.flac ]] && continue
+  rm -f "$f"
 done
