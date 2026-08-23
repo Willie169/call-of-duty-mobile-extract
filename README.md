@@ -6,7 +6,7 @@ This project provides scripts that extract audio files from Call of Duty Mobile 
 
 - Call of Duty Mobile installed in user 0 (i.e., primary/personal profile) in Android with resources you want downloaded in game.
 - Linux or Termux Bash shell. Other shells may and may not be supported. You may modify the scripts to adapt to your environment. Pull requests and issues are welcome.
-- ADB shell to the Android device, either with another device or using [Shizuku](https://github.com/thedjchi/Shizuku) with [Termux](https://github.com/termux/termux-app).
+- ADB shell to the Android device, either with `adb` (recommended) or using [Shizuku](https://github.com/thedjchi/Shizuku) with [Termux](https://github.com/termux/termux-app).
   - If you are using Shizuku, put the directory where `rish` is located to `$PATH` so that interactive ADB shell can be accessed with `rish`.
   - Only Termux with storage permission (can be granted with `termux-setup-storage`) is supported when using `rish`.
   - Termux (`com.termux`) can be installed from [F-Droid](https://f-droid.org/packages/com.termux). Google Play version is no longer updated and will receive package command error.
