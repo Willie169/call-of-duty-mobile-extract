@@ -2,7 +2,7 @@
 
 # shellcheck disable=2001
 
-msg="$0 [-h|--help] [-r|--rish] [-a|--adb] [-o|--original] [-m|--wem] [-w|--wav] [-f|--flac] [-d|--dir working_dir] [-c|--clean] [-- adb_args]
+msg="$0 [-h|--help] [-r|--rish] [-a|--adb] [-o|--original] [-m|--wem] [-w|--wav] [-f|--flac] [-d|--dir working_dir] [-p|--path path] [-c|--clean] [-- adb_args]
 -h|--help: Print this help message.
 -r|--rish: Assume interactive ADB shell is available with rish.
 -a|--adb (default): Assume ADB is connected.
@@ -12,8 +12,9 @@ adb_args: arguments that will be passed to rish or adb.
 -m|--wem: bnkextr is also needed.
 -w|--wav: vgmstream is also needed.
 -f|--flac: ffmpeg is also needed.
-working_dir: working directory, current directory used if not provided
--c|--clean: Delete all files except audio files. 
+working_dir: working directory, current directory used if not provided.
+path: path of the audio files you want. Default to /storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Audio/GeneratedSoundBanks.
+-c|--clean: Delete all files except audio files.
 More information: https://github.com/Willie169/call-of-duty-mobile-extract"
 path='/storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Audio/GeneratedSoundBanks'
 dir="$PWD"
@@ -67,6 +68,14 @@ while [ $# -gt 0 ]; do
         exit 1
       fi
       dir="$2"
+      shift 2
+      ;;
+    -p | --path)
+      if [ -z "$2" ]; then
+        echo "Error: -p|--path requires an argument" >&2
+        exit 1
+      fi
+      path="$2"
       shift 2
       ;;
     -c | --clean)
