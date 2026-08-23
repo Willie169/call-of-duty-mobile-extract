@@ -13,7 +13,7 @@ adb_args: arguments that will be passed to rish or adb.
 -w|--wav: vgmstream is also needed.
 -f|--flac: ffmpeg is also needed.
 working_dir: working directory, current directory used if not provided
--c|--clean: Delete all files except audio files. 
+-c|--clean: Delete all files except audio files anc delete empty directories. 
 More information: https://github.com/Willie169/call-of-duty-mobile-extract"
 path='/storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Audio/GeneratedSoundBanks'
 dir="$PWD"
@@ -160,3 +160,4 @@ for f in "${files[@]}"; do
   [[ "$f" == *.flac ]] && continue
   rm -f "$f"
 done
+find . -type d -empty -delete
