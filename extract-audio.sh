@@ -2,7 +2,7 @@
 
 # shellcheck disable=2001
 
-msg="$0 [-h|--help] [-r|--rish] [-a|--adb] [-o|--original] [-m|--wem] [-w|--wav] [-f|--flac] [-- adb_args]
+msg="$0 [-h|--help] [-r|--rish] [-a|--adb] [-o|--original] [-m|--wem] [-w|--wav] [-f|--flac] [-d|--dir working_dir] [-- adb_args]
 -h|--help: Print this help message.
 -r|--rish: Assume interactive ADB shell is available with rish.
 -a|--adb (default): Assume ADB is connected.
@@ -11,8 +11,10 @@ adb_args: arguments that will be passed to rish or adb.
 -o|--original: Only rish or ADB is needed.
 -m|--wem: bnkextr is also needed.
 -w|--wav: vgmstream is also needed.
--f|--flac: ffmpeg is also needed."
+-f|--flac: ffmpeg is also needed.
+working_dir: working directory, current directory used if not provided"
 path='/storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Audio/GeneratedSoundBanks'
+dir="$PWD"
 rish=0
 args=()
 original=0
@@ -55,6 +57,10 @@ while [ $# -gt 0 ]; do
       [ "$wav" -eq 0 ] && wav=1
       shift
       ;;
+    -d | --dir)
+      dir="$2"
+      shift 2
+      ;;
     --)
       shift
       args=("$@")
@@ -67,6 +73,10 @@ while [ $# -gt 0 ]; do
       ;;
   esac
 done
+mkdir -p "$dir"
+if ! cd "$dir"; then
+  echo "Error: can't enter working directory" >&2
+fi
 if [ "$original" -eq 0 ]; then
   echo 'Error: no format wanted' >&2
   echo "$msg" >&2
@@ -75,7 +85,7 @@ fi
 if [ "$rish" -eq 0 ]; then
   adb "${args[@]}" pull "$path"
   if ! cd GeneratedSoundBanks; then
-    echo 'adb pull failed.' >&2
+    echo 'Error: adb pull failed.' >&2
     exit 1
   fi
 else
@@ -86,7 +96,7 @@ else
   cp -r "/storage/emulated/0/$uuid/GeneratedSoundBanks" .
   rm -r "/storage/emulated/0/$uuid"
   if ! cd GeneratedSoundBanks; then
-    echo 'Either rish copy or Termux copy failed.'
+    echo 'Error: Either rish copy or Termux copy failed.'
     exit 1
   fi
 fi
