@@ -8,10 +8,10 @@ msg="$0 [-h|--help] [-r|--rish] [-a|--adb] [-d|--dir working_dir] [-p|--path pat
 -a|--adb (default): Assume ADB is connected.
 adb_args: arguments that will be passed to rish or adb.
 working_dir: working directory, current directory used if not provided.
-path: path of the audio files you want. Default to /storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Vedios
--c|--clean: Delete all files except vedio files.
+path: path of the audio files you want. Default to /storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Videos
+-c|--clean: Delete all files except video files.
 More information: https://github.com/Willie169/call-of-duty-mobile-extract"
-path='/storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Vedios'
+path='/storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Videos'
 dir="$PWD"
 rish=0
 args=()

@@ -46,7 +46,7 @@ Execute
 ```
 git clone https://github.com/Willie169/call-of-duty-mobile-extract.git
 cd call-of-duty-mobile-extract
-./extract-vedio.sh -h
+./extract-video.sh -h
 ```
 and read the help message printed.
 
