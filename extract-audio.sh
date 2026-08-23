@@ -12,7 +12,8 @@ adb_args: arguments that will be passed to rish or adb.
 -m|--wem: bnkextr is also needed.
 -w|--wav: vgmstream is also needed.
 -f|--flac: ffmpeg is also needed.
-working_dir: working directory, current directory used if not provided"
+working_dir: working directory, current directory used if not provided
+More information: https://github.com/Willie169/call-of-duty-mobile-extract"
 path='/storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Audio/GeneratedSoundBanks'
 dir="$PWD"
 rish=0
