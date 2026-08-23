@@ -1,6 +1,6 @@
 # call-of-duty-mobile-extract
 
-This project provides scripts that extract audio files from Call of Duty Mobile Android app.
+This project provides scripts that extract resources from Call of Duty Mobile Android app.
 
 ## Common Prerequisites
 
