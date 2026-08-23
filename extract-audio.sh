@@ -7,13 +7,13 @@ msg="$0 [-h|--help] [-r|--rish] [-a|--adb] [-o|--original] [-m|--wem] [-w|--wav]
 -r|--rish: Assume interactive ADB shell is available with rish.
 -a|--adb (default): Assume ADB is connected.
 adb_args: arguments that will be passed to rish or adb.
--o|--original, -m|--wem, -w|--wav, -f|--flac: formats you want. You may supply multiple formats. Intemediate formats that are not wanted will be deleted automatically.
+-o|--original, -m|--wem, -w|--wav, -f|--flac: formats you want. You may supply multiple formats. Intermediate formats that are not wanted will be deleted automatically.
 -o|--original: Only rish or ADB is needed.
 -m|--wem: bnkextr is also needed.
 -w|--wav: vgmstream is also needed.
 -f|--flac: ffmpeg is also needed.
 working_dir: working directory, current directory used if not provided
--c|--clean: Delete all files except audio files anc delete empty directories. 
+-c|--clean: Delete all files except audio files. 
 More information: https://github.com/Willie169/call-of-duty-mobile-extract"
 path='/storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Audio/GeneratedSoundBanks'
 dir="$PWD"
@@ -118,10 +118,9 @@ else
     exit 1
   fi
 fi
-shopt -s globstar
+shopt -s globstar nullglob
 [ "$wem" -eq 0 ] && exit 0
 for f in **/*.bnk; do
-  test -f "$f" || continue
   if ! command -v bnkextr >/dev/null 2>&1; then
     echo 'Error: bnkextr not available' >&2
     exit 1
@@ -131,7 +130,6 @@ for f in **/*.bnk; do
 done
 [ "$wav" -eq 0 ] && exit 0
 for f in **/*.wem; do
-  test -f "$f" || continue
   if ! command -v vgmstream-cli >/dev/null 2>&1; then
     echo 'Error: vgmstream-cli not available' >&2
     exit 1
@@ -142,7 +140,6 @@ for f in **/*.wem; do
 done
 [ "$flac" -eq 0 ] && exit 0
 for f in **/*.wav; do
-  test -f "$f" || continue
   if ! command -v ffmpeg >/dev/null 2>&1; then
     echo 'Error: ffmpeg not available' >&2
     exit 1
@@ -152,12 +149,13 @@ for f in **/*.wav; do
   [ "$wav" -eq 1 ] && rm "$f"
 done
 [ "$clean" -eq 0 ] && exit 0
-mapfile -d '' files < <(find . -type f -print0)
-for f in "${files[@]}"; do
-  [[ "$f" == *.bnk ]] && continue
-  [[ "$f" == *.wem ]] && continue
-  [[ "$f" == *.wav ]] && continue
-  [[ "$f" == *.flac ]] && continue
-  rm -f "$f"
-done
+while IFS= read -r -d '' f; do
+  case "${f,,}" in
+    *.bnk|*.wem|*.wav|*.flac)
+      ;;
+    *)
+      rm -f "$f"
+      ;;
+  esac
+done < <(find . -type f -print0)
 find . -type d -empty -delete
