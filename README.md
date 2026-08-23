@@ -16,9 +16,12 @@ This project provides scripts that extract audio files from Call of Duty Mobile 
 
 ## Usage
 
+Execute
 ```
-./extract-audio.sh <options>
+chmod +x extract-audio.sh
+./extract-audio.sh -h
 ```
+to read the help message.
 
 ## Other formats
 

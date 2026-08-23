@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=2001
+
 msg="$0 [-h|--help] [-r|--rish] [-a|--adb] [-o|--original] [-m|--wem] [-w|--wav] [-f|--flac] [-- adb_args]
 -h|--help: Print this help message.
 -r|--rish: Assume interactive ADB shell is available with rish.
--a|--adb: Assume ADB is connected. (default)
+-a|--adb (default): Assume ADB is connected.
 adb_args: arguments that will be passed to rish or adb.
 -o|--original, -m|--wem, -w|--wav, -f|--flac: formats you want. You may supply multiple formats. Intemediate formats that are not wanted will be deleted automatically.
 -o|--original: Only rish or ADB is needed.
@@ -13,7 +15,10 @@ adb_args: arguments that will be passed to rish or adb.
 path='/storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Audio/GeneratedSoundBanks'
 rish=0
 args=()
-formats=()
+original=0
+wem=0
+wav=0
+flac=0
 while [ $# -gt 0 ]; do
   case "$1" in
     -h | --help)
@@ -29,24 +34,30 @@ while [ $# -gt 0 ]; do
       shift
       ;;
     -o | --original)
-      formats+=('bnk')
+      original=2
       shift
       ;;
     -m | --wem)
-      formats+=('wem')
+      wem=2
+      [ "$original" -eq 0 ] && original=1
       shift
       ;;
     -w | --wav)
-      formats+=('wav')
+      wav=2
+      [ "$original" -eq 0 ] && original=1
+      [ "$wem" -eq 0 ] && wem=1
       shift
       ;;
     -f | --flac)
-      formats+=('flac')
+      flac=2
+      [ "$original" -eq 0 ] && original=1
+      [ "$wem" -eq 0 ] && wem=1
+      [ "$wav" -eq 0 ] && wav=1
       shift
       ;;
     --)
       shift
-      args="$@"
+      args=("$@")
       break
       ;;
     *)
@@ -56,19 +67,45 @@ while [ $# -gt 0 ]; do
       ;;
   esac
 done
-if [ "${#formats[@]}" -eq 0 ]; then
+if [ "$original" -eq 0 ]; then
   echo 'Error: no format wanted' >&2
   echo "$msg" >&2
   exit 1
 fi
 if [ "$rish" -eq 0 ]; then
   adb "${args[@]}" pull "$path"
+  if ! cd GeneratedSoundBanks; then
+    echo 'adb pull failed.' >&2
+    exit 1
+  fi
 else
   command -v uuidgen >/dev/null 2>&1 || pkg install uuid-utils -y
   uuid=$(uuidgen)
   mkdir "/storage/emulated/0/$uuid"
-  echo "cp -r /storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Audio/GeneratedSoundBanks /storage/emulated/0/$uuid/ && exit" | rish
+  echo "cp -r /storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Audio/GeneratedSoundBanks /storage/emulated/0/$uuid/; exit" | rish
   cp -r "/storage/emulated/0/$uuid/GeneratedSoundBanks" .
   rm -r "/storage/emulated/0/$uuid"
+  if ! cd GeneratedSoundBanks; then
+    echo 'Either rish copy or Termux copy failed.'
+    exit 1
+  fi
 fi
-
+shopt -s globstar
+[ "$wem" -eq 0 ] && exit
+for f in **/*.bnk; do
+  test -f "$f" || continue
+  bnkextr "$f"
+  [ "$original" -eq 1 ] && rm "$f"
+done
+[ "$wav" -eq 0 ] && exit
+for f in **/*.wem; do
+  test -f "$f" || continue
+  vgmstream -o "$(echo "$f" | sed 's/\.wem$/.wav/')" "$f"
+  [ "$wem" -eq 1 ] && rm "$f"
+done
+[ "$flac" -eq 0 ] && exit
+for f in **/*.wav; do
+  test -f "$f" || continue
+  ffmpeg -i "$f" -c:a flac "$(echo "$f" | sed 's/\.wav$/.flac/')"
+  [ "$wav" -eq 1 ] && rm "$f"
+done
