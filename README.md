@@ -1,6 +1,6 @@
 # call-of-duty-mobile-extract
 
-This project provides scripts that extract resources from Call of Duty Mobile Android app.
+This project provides scripts that extract resources from Activision Call of Duty Mobile (com.activision.callofduty.shooter) and Garena Call of Duty Mobile (com.garena.game.codm) Android apps.
 
 ## Common Prerequisites
 
