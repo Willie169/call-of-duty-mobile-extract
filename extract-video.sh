@@ -2,15 +2,15 @@
 
 # shellcheck disable=2001
 
-msg="$0 [-h|--help] [-g|--garena] [-r|--rish] [-a|--adb] [-d|--dir working_dir] [-p|--path path] [-c|--clean] [-- adb_args]
+msg="$0 [-h|--help] [-g|--garena] [-k|--korea] [-v|--vietnam] [-c|--china] [-r|--rish] [-a|--adb] [-d|--dir working_dir] [-p|--path path] [-l|--clean] [-- adb_args]
 -h|--help: Print this help message.
--g|--garena: Set the default path of the video files. Path for Activision Call of Duty Mobile (com.activision.callofduty.shooter), /storage/emulated/0/Android/data/com.activision.callofduty.shooter/files/PufferQts/Videos, is used if -g|--garena is not supplied, path for Garena Call of Duty Mobile (com.garena.game.codm), /storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Videos, is used if -g|--garena is supplied. It can be overriden by -p|--path path.
+-g|--garena, -k|--korea, -v|--vietnam, -c|--china: Set the package name in the default path of the video files. The default path is /storage/emulated/0/Android/data/<pkg>/files/PufferQts/Videos. If none of them is used, <pkg> is com.activision.callofduty.shooter. If -g|--garena is used, <pkg> is com.garena.game.codm. If -k|--korea is used, <pkg> is com.tencent.tmgp.kr.codm. If -v|--vietenam is used, <pkg> is com.vng.codmvn. If -c|--china is used, <pkg> is com.tencent.tmgp.cod. The path can be overriden by -p|--path path.
 -r|--rish: Assume interactive ADB shell is available with rish.
 -a|--adb (default): Assume ADB is connected.
 adb_args: arguments that will be passed to rish or adb.
 working_dir: working directory, current directory used if not provided.
 path: custom path of the video files.
--c|--clean: Delete all files except video files.
+-l|--clean: Delete all files except video files.
 More information: https://github.com/Willie169/call-of-duty-mobile-extract"
 cpath=''
 path='/storage/emulated/0/Android/data/com.activision.callofduty.shooter/files/PufferQts/Videos'
@@ -27,6 +27,18 @@ while [ $# -gt 0 ]; do
       ;;
     -g | --garena)
       path='/storage/emulated/0/Android/data/com.garena.game.codm/files/PufferQts/Videos'
+      shift
+      ;;
+    -k | --korea)
+      path='/storage/emulated/0/Android/data/com.tencent.tmgp.kr.codm/files/PufferQts/Audio'
+      shift
+      ;;
+    -v | --vietnam)
+      path='/storage/emulated/0/Android/data/com.vng.codmvn/files/PufferQts/Audio'
+      shift
+      ;;
+    -c | --china)
+      path='/storage/emulated/0/Android/data/com.tencent.tmgp.cod/files/PufferQts/Audio'
       shift
       ;;
     -r | --rish)
@@ -53,7 +65,7 @@ while [ $# -gt 0 ]; do
       cpath="$2"
       shift 2
       ;;
-    -c | --clean)
+    -l | --clean)
       clean=1
       shift
       ;;

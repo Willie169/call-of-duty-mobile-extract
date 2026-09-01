@@ -1,10 +1,22 @@
 # call-of-duty-mobile-extract
 
-This project provides scripts that extract resources from Activision Call of Duty Mobile (com.activision.callofduty.shooter) and Garena Call of Duty Mobile (com.garena.game.codm) Android apps.
+This project provides scripts that extract resources from the following Android apps:
+- Call of Duty / Call of Duty®: Mobile by Activision Publishing, Inc. (com.activision.callofduty.shooter)
+- Call of Duty / Call of Duty®: Mobile - Garena by Garena Mobile Private (com.garena.game.codm)
+- 콜 오브 듀티: 모바일 / Call of Duty Mobile (KR) by Level Infinite (com.tencent.tmgp.kr.codm)
+- Call of Duty / Call Of Duty: Mobile VN by VNG GROUP JSC (com.vng.codmvn)
+- 使命召唤手游 by 深圳市腾讯计算机系统有限公司 (com.tencent.tmgp.cod)
 
 ## Common Prerequisites
 
-- Call of Duty Mobile installed in user 0 (i.e., primary/personal profile) in Android with resources you want downloaded in game.
+These are needed for all provided scripts.
+
+- Call of Duty Mobile installed in user 0 (i.e., primary/personal profile) on Android with resources you want downloaded in game. You can install them by first install [Obtainium](https://github.com/ImranR98/Obtainium) and then add the following links to it:
+    * [Call of Duty / Call of Duty®: Mobile by Activision Publishing, Inc. (com.activision.callofduty.shooter)](https://apkpure.com/call-of-duty-mobile-game/com.activision.callofduty.shooter)
+    * [Call of Duty / Call of Duty®: Mobile - Garena by Garena Mobile Private (com.garena.game.codm)](https://apkpure.com/call-of-duty-mobile-garena-app/com.garena.game.codm)
+    * [콜 오브 듀티: 모바일 / Call of Duty Mobile (KR) by Level Infinite (com.tencent.tmgp.kr.codm)](https://apkpure.com/call-of-duty-mobile-kr/com.tencent.tmgp.kr.codm)
+    * [Call of Duty / Call Of Duty: Mobile VN by VNG GROUP JSC (com.vng.codmvn)](https://apkpure.com/call-of-duty-mobile-vn-app/com.vng.codmvn)
+    * [使命召唤手游 by 深圳市腾讯计算机系统有限公司 (com.tencent.tmgp.cod)](https://sj.qq.com/appdetail/com.tencent.tmgp.cod)
 - Linux or Termux Bash shell. Other shells may and may not be supported. You may modify the scripts to adapt to your environment. Pull requests and issues are welcome.
 - ADB shell to the Android device, either with `adb` (recommended) or using [Shizuku](https://github.com/thedjchi/Shizuku) `rish` with [Termux](https://github.com/termux/termux-app). If you are using Shizuku `rish` with Termux, put where `rish` locates to `$PATH` so that interactive ADB shell can be accessed with `rish` and grant Termux storage permission by running `termux-setup-storage`. Termux (`com.termux`) can be installed from [F-Droid](https://f-droid.org/packages/com.termux). Google Play version is not supported.
 
